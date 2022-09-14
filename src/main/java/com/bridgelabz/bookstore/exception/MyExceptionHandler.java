@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 public class MyExceptionHandler {
 
-    @ExceptionHandler(BookStoreException.class)
+    @ExceptionHandler(CustomException.class)
     public ResponseEntity<ResponseDTO> handleBookStoreException(Exception exception){
         ResponseDTO responseDTO = new ResponseDTO("ERROR => BookStoreException", exception.getMessage());
         return new ResponseEntity<>(responseDTO, HttpStatus.BAD_REQUEST);

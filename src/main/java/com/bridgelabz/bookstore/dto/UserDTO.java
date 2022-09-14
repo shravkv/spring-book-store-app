@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Email;
-
+import java.time.LocalDate;
 
 
 @Data
@@ -21,6 +21,8 @@ public class UserDTO {
     private String email;
 
     private String address;
+
+    private LocalDate dob;
 
     private String password;
 
