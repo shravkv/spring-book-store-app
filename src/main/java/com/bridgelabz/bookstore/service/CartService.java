@@ -53,5 +53,35 @@ public class CartService {
         }
         return null;
     }
+    public List<Cart> getAllCarts(String token) {
+        long userId = tokenUtility.decodeToken(token);
+        UserData user = userRepository.findById(userId).orElseThrow(() -> new CustomException("User id " + userId + " not found"));
+        if (!user.isAdmin()) throw new CustomException("User is not Admin");
+        if (cartRepository.findAll().isEmpty()) throw new CustomException("No cart added yet");
+        return cartRepository.findAll();
+    }
 
+    public Cart getCartById(String token, long id) {
+        long userId = tokenUtility.decodeToken(token);
+        if (userId != id) throw new CustomException("Token is not matching with user id " + id);
+        UserData user = userRepository.findById(userId).orElseThrow(() -> new CustomException("User id " + userId + " not found"));
+        if (!user.isAdmin()) throw new CustomException("User is not Admin");
+        return cartRepository.findById(id).orElseThrow(() -> new CustomException("Cart og id " + userId + " not found"));
+    }
+
+    public String deleteCartById(String token, long id) {
+        long userId = tokenUtility.decodeToken(token);
+        if (userId != id) throw new CustomException("Token is not matching with user id " + id);
+        if (cartRepository.existsById(id)) {
+            cartRepository.deleteById(id);
+        } else throw new CustomException("cart not found of id " + id);
+        return "Cart deleted of id " + id;
+    }
+
+    public Cart UpdateCart(String token, CartDTO cartDTO, long cartId) {
+        long userId = tokenUtility.decodeToken(token);
+        if (userId == cartId) {
+            return addToCart(token, cartDTO);
+        } else throw new CustomException("cartId " + cartId + " not matching with token");
+    }
 }
