@@ -2,6 +2,7 @@ package com.bridgelabz.bookstore.service;
 
 import com.bridgelabz.bookstore.dto.CartDTO;
 import com.bridgelabz.bookstore.exception.CustomException;
+import com.bridgelabz.bookstore.model.Book;
 import com.bridgelabz.bookstore.model.Cart;
 import com.bridgelabz.bookstore.model.UserData;
 import com.bridgelabz.bookstore.repository.BookRepository;
@@ -27,23 +28,28 @@ public class CartService {
 
     public Cart addToCart(String token, CartDTO cartDTO) {
         Cart cart;
-        List<Integer> bookIdList = cartDTO.getBookIdList();
-        List<Integer> quantityList = cartDTO.getQuantity();
+        List<Long> bookIdList = cartDTO.getBookIdList();
+        List<Long> quantityList = cartDTO.getQuantity();
         long userId = tokenUtility.decodeToken(token);
         UserData userData = userRepository.findById(userId).orElseThrow(() -> new CustomException("User id " + userId + " not found"));
-
+        double totalCartPrice = 0;
         for (int i = 0; i < bookIdList.size(); i++) {
-            if (quantityList.get(i) > bookRepository.findBookById(bookIdList.get(i)).getQuantity())
-                throw new CustomException("Book quantity exceeded for book id "+ bookIdList.get(i));
+            Book book = bookRepository.findBookById(bookIdList.get(i));
+            if (quantityList.get(i) > book.getQuantity())
+                throw new CustomException("Book quantity exceeded for book id " + bookIdList.get(i));
+            else {
+                totalCartPrice +=book.getPrice() * quantityList.get(i);
+            }
         }
         if (cartRepository.existsById(userId)) {
             cart=cartRepository.findById(userId).orElseThrow(() -> new CustomException("User id " + userId + " not found"));
             cart.setUserData(userData);
             cart.setBookIdList(cartDTO.getBookIdList());
-            cart.setQuantity(cartDTO.getQuantity());
+            cart.setQuantities(cartDTO.getQuantity());
+            cart.setTotalCartPrice(totalCartPrice);
             return cartRepository.save(cart);
         } else {
-            cart = new Cart(userId, userData, cartDTO.getBookIdList(), cartDTO.getQuantity());
+            cart = new Cart(userId, userData, cartDTO.getBookIdList(), cartDTO.getQuantity(),totalCartPrice);
             try {
 
                 return cartRepository.save(cart);

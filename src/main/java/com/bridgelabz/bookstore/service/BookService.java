@@ -14,8 +14,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-
-public class BookService {
+public class BookService implements IBookService{
 
     @Autowired
     BookRepository bookRepository;
@@ -39,6 +38,17 @@ public class BookService {
     public List<Book> getAllBooks() {
         if (!bookRepository.findAll().isEmpty()) {
             return bookRepository.findAll();
+        } else throw new CustomException("Books Table is Empty!");
+    }
+    public List<Book> sortBooksAscending() {
+        if (!bookRepository.findAll().isEmpty()) {
+            return bookRepository.sortBooksAscending();
+        } else throw new CustomException("Books Table is Empty!");
+    }
+
+    public List<Book> sortBooksDescending() {
+        if (!bookRepository.findAll().isEmpty()) {
+            return bookRepository.sortBooksDescending();
         } else throw new CustomException("Books Table is Empty!");
     }
 

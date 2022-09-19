@@ -32,6 +32,17 @@ public class BookController {
         ResponseDTO responseDTO = new ResponseDTO("GET call Success", bookService.getAllBooks());
         return new ResponseEntity<>(responseDTO, HttpStatus.OK);
     }
+    @GetMapping("/get/asce")
+    public ResponseEntity<ResponseDTO> sortBooksAscending(){
+        ResponseDTO responseDTO = new ResponseDTO("GET call Success", bookService.sortBooksAscending());
+        return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+    }
+    @GetMapping("/get/desc")
+    public ResponseEntity<ResponseDTO> sortBooksDescending(){
+        ResponseDTO responseDTO = new ResponseDTO("GET call Success", bookService.sortBooksDescending());
+        return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+    }
+    
 
     @GetMapping("/get/{id}")
     public ResponseEntity<ResponseDTO> getBookById(@RequestHeader(name = "Authorization") String token, @PathVariable long id){

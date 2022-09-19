@@ -1,7 +1,6 @@
 package com.bridgelabz.bookstore.repository;
 
 import com.bridgelabz.bookstore.model.Book;
-import com.bridgelabz.bookstore.model.UserData;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -19,5 +18,8 @@ public interface BookRepository extends JpaRepository<Book, Long> {
     @Query(value = "select * from books book where book.book_id = :id",nativeQuery = true)
     Book findBookById(@Param("id") long id);
 
-//    @Query(value = "SELECT * from users u where u.email = :mail",nativeQuery = true)
+    @Query(value = "select * from books book order by book.book_name",nativeQuery = true)
+    List<Book> sortBooksAscending();
+    @Query(value = "select * from books book order by book.book_name desc ",nativeQuery = true)
+    List<Book> sortBooksDescending();
 }
